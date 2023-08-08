@@ -20,13 +20,7 @@ function App() {
           maxHeight: '380px',
           overflowY: 'auto',
         }}
-        renderItem={(item) => (
-          <li key={item.id} className="p-4 bg-white border-b-2">
-            <div className="text-xl text-slate-800 pb-1">
-              {item.name}
-            </div>
-          </li>
-        )}
+       
       />
     </div>
   )

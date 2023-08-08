@@ -1,4 +1,5 @@
-import {ComponentPropsWithoutRef, ReactNode} from 'react'
+import {ComponentPropsWithoutRef, ReactNode, useState} from 'react'
+import { IdValue } from './types';
 
 type Props<Data> = {
    data: Data[];
@@ -9,6 +10,17 @@ type Props<Data> = {
 } & ComponentPropsWithoutRef<'ul'>;
 
 export function Checklist<Data>({ data, id, primary, secondary, renderItem, ...ulProps }: Props<Data>) {
+   const [checkedIds, setCheckedIds] = useState<IdValue[]>([]);
+
+   const handleCheckChange = (checkedId: IdValue) => () => {
+      const isChecked = checkedIds.includes(checkedId);
+      let newCheckedIds = isChecked ?
+         checkedIds.filter(
+            (itemCheckedid) => itemCheckedid !== checkedId
+         ) : checkedIds.concat(checkedId);
+      setCheckedIds(newCheckedIds);
+    };
+
    return (
       <ul
          {...ulProps}
@@ -31,14 +43,24 @@ export function Checklist<Data>({ data, id, primary, secondary, renderItem, ...u
                      key={idValue}
                      className="p-6 bg-white shadow rounded mb-4 last:mb-0"
                   >
-                     <div className="text-xl text-gray-800 pb-1">
-                        {primaryText}
-                     </div>
-                     {typeof secondaryText === 'string' && (
-                        <div className="text-sm text-gray-500">
-                           {secondaryText}
+                     <label className='flex items-center'>
+                        <input
+                           type='checkbox'
+                           checked={checkedIds.includes(idValue)}
+                           onChange={handleCheckChange(idValue)}
+                        />
+                        <div className='ml-2'>
+                           <div className="text-xl text-gray-800 pb-1">
+                           {primaryText}
+                           </div>
+                           {typeof secondaryText === 'string' && (
+                              <div className="text-sm text-gray-500">
+                                 {secondaryText}
+                              </div>
+                           )}
                         </div>
-                     )}
+                     </label>
+                     
                   </li>
                )
             })
